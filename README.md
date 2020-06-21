@@ -23,9 +23,20 @@ Add `zsh-tmux-auto-title` to `plugins` in `.zshrc`.
 
 ## Usage
 
-Once enabled, this plugin will automatically set the title of the current window/pane as the current command, by issuing escape sequences that tmux understands. By default the whole command line will be used, but you can make it shorter if you want. You can also set what the window/pane title will be when no command is running.
+This plugin automatically issues escape sequences to set the title of the window/pane as the current running command. By default the whole command line is used, but you can make it shorter if you want. You can also set what the title looks like when no command is running. See [configuration](#configuration) for more details.
+
+### Panes
+
+By default tmux displays pane titles on the left side of the status line. If you are employing a custom status line, make sure `#T` (or `pane_title`) is used somewhere. You can also use `pane-border-status` and `pane-border-style` to display the titles of all panes at once. See [tmux manual](https://www.man7.org/linux/man-pages/man1/tmux.1.html) for more information.
+
+### Windows
+
+Tmux won't allow programs to rename windows unless `allow-rename` is `on`. So make sure to add `set -g allow-rename on` to your `.tmux.conf` file if you want to rename windows.
+
+If you are using Oh My Zsh you should also set `DISABLE_AUTO_TITLE=true` in your `.zshrc` file so it won't conflict with this plugin.
 
 ## Configuration
+
 
 | Variable | Description |
 |-|-|
