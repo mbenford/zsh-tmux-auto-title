@@ -10,6 +10,7 @@
 : ${ZSH_TMUX_AUTO_TITLE_EXPAND_ALIASES:=true}
 : ${ZSH_TMUX_AUTO_TITLE_IDLE_TEXT:=%shell}
 : ${ZSH_TMUX_AUTO_TITLE_IDLE_DELAY:=1}
+: ${ZSH_TMUX_AUTO_TITLE_PREFIX:=}
 
 typeset -g ZSH_TMUX_AUTO_TITLE_LAST
 
@@ -33,7 +34,7 @@ _zsh_tmux_auto_title_preexec() {
 		[[ "$cmd_type" = "alias" ]] && cmd=$(whence $cmd)
 	fi
 
-	local title=$line
+	local title=$ZSH_TMUX_AUTO_TITLE_PREFIX$line
 	[[ "$ZSH_TMUX_AUTO_TITLE_SHORT" = "true" ]] && 
 	! [[ "$cmd" =~ "$ZSH_TMUX_AUTO_TITLE_SHORT_EXCLUDE" ]] && title=$cmd
 
@@ -49,7 +50,7 @@ _zsh_tmux_auto_title_precmd() {
 		%shell) title=$(echo -n ${0:s/-//}) ;;
 		%last)  title="!$ZSH_TMUX_AUTO_TITLE_LAST" ;;
 	esac
-
+        title=$ZSH_TMUX_AUTO_TITLE_PREFIX$title
 	if [[ "$ZSH_TMUX_AUTO_TITLE_IDLE_DELAY" = "0" ]]; then
 		_zsh_tmux_auto_title_set_title $title
 	else	
