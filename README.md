@@ -46,3 +46,5 @@ If you are using Oh My Zsh you should also set `DISABLE_AUTO_TITLE=true` in your
 | `ZSH_TMUX_AUTO_TITLE_EXPAND_ALIASES` | Determines whether aliases should be expanded or kept as is. Defaults to `true`. |
 | `ZSH_TMUX_AUTO_TITLE_IDLE_TEXT` | Text to be used when no command is running. It can be either a plain string or one of the following variables: <br>`%pwd`: current directory; <br>`%shell`: current shell;<br>`%last`: last command, prefixed by an exclamation mark.<br>Defaults to `%shell`. |
 | `ZSH_TMUX_AUTO_TITLE_IDLE_DELAY` | Delay, in seconds, before the idle text is displayed. Defaults to `1`. |
+| `ZSH_TMUX_AUTO_TITLE_PREFIX` | A prefix added to the title, Defaults to `""`. |
+
