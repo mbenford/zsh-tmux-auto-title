@@ -16,7 +16,8 @@ echo "source ~/zsh-tmux-auto-title/zsh-tmux-auto-title.plugin.zsh" >>! ~/.zshrc
 ### Oh My Zsh:
 
 ```
-git clone --depth=1 https://github.com/mbenford/zsh-tmux-auto-title ${ZSH_CUSTOM:~/.oh-my-zsh/custom}/plugins
+git clone --depth=1 https://github.com/mbenford/zsh-tmux-auto-title "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-tmux-auto-title"
+
 ```
 
 Add `zsh-tmux-auto-title` to `plugins` in `.zshrc`.
