@@ -10,7 +10,7 @@ ZSH plugin for tmux that automatically sets the title of windows/panes as the cu
 
 ```
 git clone --depth=1 https://github.com/mbenford/zsh-tmux-auto-title ~/zsh-tmux-auto-title
-echo "source ~/zsh-tmux-auto-title/zsh-tmux-auto-title.plugin.zsh" >>! ~/.zshrc
+echo '[[ -n $TMUX ]] && source ~/zsh-tmux-auto-title/zsh-tmux-auto-title.plugin.zsh' >>! ~/.zshrc
 ```
 
 ### Oh My Zsh:
