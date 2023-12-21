@@ -11,8 +11,10 @@
 : ${ZSH_TMUX_AUTO_TITLE_IDLE_TEXT:=%shell}
 : ${ZSH_TMUX_AUTO_TITLE_IDLE_DELAY:=1}
 : ${ZSH_TMUX_AUTO_TITLE_PREFIX:=}
+: ${ZSH_TMUX_AUTO_TITLE_ALWAYS_SHOW_IDLE_TEXT:=false}
 
 typeset -g ZSH_TMUX_AUTO_TITLE_LAST
+typeset -g ZSH_TMUX_AUTO_TITLE_PARSED_IDLE_TEXT
 
 _zsh_tmux_auto_title_set_title() {
 	case $ZSH_TMUX_AUTO_TITLE_TARGET in
@@ -21,11 +23,22 @@ _zsh_tmux_auto_title_set_title() {
 	esac
 }
 
+_zsh_tmux_auto_title_update_idle_text() {
+	local title=$ZSH_TMUX_AUTO_TITLE_IDLE_TEXT
+
+	case $title in
+		%pwd)   title=$(print -P %~) ;;
+		%shell) title=$(echo -n ${0:s/-//}) ;;
+		%last)  title="!$ZSH_TMUX_AUTO_TITLE_LAST" ;;
+	esac
+	ZSH_TMUX_AUTO_TITLE_PARSED_IDLE_TEXT=$ZSH_TMUX_AUTO_TITLE_PREFIX$title
+}
+
 _zsh_tmux_auto_title_preexec() {
 	setopt extended_glob
 
-  local cmd=${1[(wr)^(*=*|sudo|ssh|mosh|-*)]:gs/%/%%}
-  local line="${2:gs/%/%%}"
+	local cmd=${1[(wr)^(*=*|sudo|ssh|mosh|-*)]:gs/%/%%}
+	local line="${2:gs/%/%%}"
 
 	[[ -z "$cmd" ]] && return
 
@@ -38,23 +51,20 @@ _zsh_tmux_auto_title_preexec() {
 	[[ "$ZSH_TMUX_AUTO_TITLE_SHORT" = "true" ]] && 
 	! [[ "$cmd" =~ "$ZSH_TMUX_AUTO_TITLE_SHORT_EXCLUDE" ]] && title=$cmd
 
-  ZSH_TMUX_AUTO_TITLE_LAST=$title
+	if [[ "$ZSH_TMUX_AUTO_TITLE_ALWAYS_SHOW_IDLE_TEXT" = "true" ]]; then
+		_zsh_tmux_auto_title_update_idle_text
+		title="$ZSH_TMUX_AUTO_TITLE_PARSED_IDLE_TEXT | $title"
+	fi
+	ZSH_TMUX_AUTO_TITLE_LAST=$title
 	_zsh_tmux_auto_title_set_title $title
 }
 
 _zsh_tmux_auto_title_precmd() {
-	local title=$ZSH_TMUX_AUTO_TITLE_IDLE_TEXT
-
-	case $title in
-		%pwd)   title=$(print -P %~) ;;
-		%shell) title=$(echo -n ${0:s/-//}) ;;
-		%last)  title="!$ZSH_TMUX_AUTO_TITLE_LAST" ;;
-	esac
-        title=$ZSH_TMUX_AUTO_TITLE_PREFIX$title
+	_zsh_tmux_auto_title_update_idle_text
 	if [[ "$ZSH_TMUX_AUTO_TITLE_IDLE_DELAY" = "0" ]]; then
-		_zsh_tmux_auto_title_set_title $title
+		_zsh_tmux_auto_title_set_title $ZSH_TMUX_AUTO_TITLE_PARSED_IDLE_TEXT
 	else	
-		sched +$ZSH_TMUX_AUTO_TITLE_IDLE_DELAY _zsh_tmux_auto_title_set_title "$title"
+		sched +$ZSH_TMUX_AUTO_TITLE_IDLE_DELAY _zsh_tmux_auto_title_set_title "$ZSH_TMUX_AUTO_TITLE_PARSED_IDLE_TEXT"
 	fi
 }
 
